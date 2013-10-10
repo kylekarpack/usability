@@ -23,13 +23,33 @@
 	});
 })();
 
-
 // Build the data object (globalize it)
 var data = {};
 data.click = [];
 data.mouseposition = [];
 data.keypress = [];
 data.clientInfo = {};
+data.networkSpeed = {};
+
+function networkInfo() {
+	var imageAddr = "https://presscdn.com/wp-content/uploads/2013/06/wordpress-cdn-map.png" + "?n=" + Math.random(); // Swap this for something real
+	var startTime, endTime;
+	var downloadSize = 10000;
+	var download = new Image();
+	download.onload = function () {
+		endTime = (new Date()).getTime();
+		showResults();
+	}
+	startTime = (new Date()).getTime();
+	download.src = imageAddr;
+
+	function showResults() {
+		var duration = (endTime - startTime) / 1000;
+		var bitsLoaded = downloadSize * 8;
+		var speedKbps = (Math.round(bitsLoaded / duration) / 1024).toFixed(2);
+		data.networkSpeed = speedKbps;
+	}
+}
 
 // Run tests
 function clientInfo() {
@@ -85,6 +105,7 @@ function c() {
 
 function init() {
 	// Initialize tracking
+	networkInfo();
 	clientInfo();
 	c();
 	k();
