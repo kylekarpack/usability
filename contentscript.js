@@ -1,35 +1,14 @@
 // TODO
-// Wrap with a manifest to turn into a Chrome Extension
 // Parse client info
 
-
-// Include jQuery to make DOM manipulation easier (can remove when packaged)
-(function() {
-	// Load the script
-	var script = document.createElement("script");
-	script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js';
-	script.type = 'text/javascript';
-	document.getElementsByTagName("head")[0].appendChild(script);
-	var checkReady = function(callback) {
-		if (window.jQuery) {
-			callback(jQuery);
-		}
-		else {
-			window.setTimeout(function() { checkReady(callback); }, 100);
-		}
-	};
-	checkReady(function($) {
-		init(); // Initialize tracking
-	});
-})();
-
 // Build the data object (globalize it)
-var data = {};
+var st = new Date(),
+	data = {};
 data.click = [];
 data.mouseposition = [];
 data.keypress = [];
 data.clientInfo = {};
-data.networkSpeed = {};
+
 
 function networkInfo() {
 	var imageAddr = "https://presscdn.com/wp-content/uploads/2013/06/wordpress-cdn-map.png" + "?n=" + Math.random(); // Swap this for something real
@@ -66,8 +45,9 @@ function m() {
 	$(window).mousemove(function() {
 		var timestamp =  String((new Date).getTime()),
 			x = this.event.clientX,
-			y = this.event.clientY;
+			y = this.event.clientY + $(this).scrollTop(); // account for scrolled down
 		var d = {};
+		console.log(data.mouseposition);
 		d[timestamp] = [x, y];
 		data.mouseposition.push(d);
 	});
@@ -104,6 +84,7 @@ function c() {
 
 
 function init() {
+	console.log("init");
 	// Initialize tracking
 	networkInfo();
 	clientInfo();
@@ -112,12 +93,20 @@ function init() {
 	m();
 }
 
+init();
+
 // Store data on unload
 window.onbeforeunload = function() {
-	var itemTitle = window.location.href;
+	// Log time on page
+	data.timeOnPage = ((new Date()) - st) / 1000;
+	
+	var itemTitle = "usability|" + window.location.href;
 	
 	localStorage.setItem(itemTitle, JSON.stringify(data));
-	return 'Your browsing data has been saved in local storage';
+	chrome.storage.local.set({itemTitle: JSON.stringify(data)}, function() {
+		message("Saved!");
+	});
+	//return 'Your browsing data has been saved in local storage';
 }
 
 // Retrieve the data (todo: parse/text it)
