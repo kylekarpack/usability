@@ -1,5 +1,8 @@
 // TODO
 // Parse client info
+// Store task-by-task, not page by page
+
+// Need to implement chrome.storage
 
 // Build the data object (globalize it)
 var st = new Date(),
@@ -8,7 +11,8 @@ data.click = [];
 data.mouseposition = [];
 data.keypress = [];
 data.clientInfo = {};
-
+data.url = window.location.href;
+data.title = document.title;
 
 function networkInfo() {
 	var imageAddr = "https://presscdn.com/wp-content/uploads/2013/06/wordpress-cdn-map.png" + "?n=" + Math.random(); // Swap this for something real
@@ -33,11 +37,12 @@ function networkInfo() {
 // Run tests
 function clientInfo() {
 	var store = navigator;
-	// remove methods
 	
+	// remove methods
 	data.clientInfo = sanitize(navigator);
-
-	// could parse data here for useful info
+	data.clientInfo.screenWidth = window.innerWidth;
+	data.clientInfo.screenHeight = window.innerHeight;
+	// could parse additional here for useful info
 }
 
 function m() {
@@ -47,7 +52,6 @@ function m() {
 			x = this.event.clientX,
 			y = this.event.clientY + $(this).scrollTop(); // account for scrolled down
 		var d = {};
-		console.log(data.mouseposition);
 		d[timestamp] = [x, y];
 		data.mouseposition.push(d);
 	});
@@ -84,7 +88,7 @@ function c() {
 
 
 function init() {
-	console.log("init");
+	//console.log("init");
 	// Initialize tracking
 	networkInfo();
 	clientInfo();
@@ -101,12 +105,19 @@ window.onbeforeunload = function() {
 	data.timeOnPage = ((new Date()) - st) / 1000;
 	
 	var itemTitle = "usability|" + window.location.href;
+	var obj = {};
+	obj[itemTitle] = JSON.stringify(data);
+	console.log(obj);
 	
-	localStorage.setItem(itemTitle, JSON.stringify(data));
-	chrome.storage.local.set({itemTitle: JSON.stringify(data)}, function() {
-		message("Saved!");
+	//localStorage.setItem(itemTitle, JSON.stringify(data));
+	chrome.storage.local.set(obj, function() {
+		console.log(itemTitle)
 	});
-	//return 'Your browsing data has been saved in local storage';
+	
+	// chrome.storage.local.set({"test": Math.random()}, function() {
+		// console.log("saved2	")
+	// });
+	return 'Your browsing data has been saved in local storage';
 }
 
 // Retrieve the data (todo: parse/text it)
