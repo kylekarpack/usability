@@ -1,15 +1,39 @@
 function get() {
 	chrome.storage.local.get(null, function(items) {
+		// if (items.status == "running") {
+			// $("#test").addClass("start");
+		// } else {
+			// $("#test").removeClass("start");
+		// }
 		var b = Object.keys(items);
 		for (var a in b) {
-			var obj = JSON.parse(items[b[a]]);
-			$("ul.list").append("<li><a href='" + obj.url + "'>" + obj.title + "</a></li>");
+			if (b[a].indexOf("usability|") == 0) {
+				var obj = JSON.parse(items[b[a]]);
+				$("ul.list").append("<li><a href='" + obj.url + "'>" + obj.title + "</a></li>");
+			}
 		}
+	});
+}
+
+function start() {
+	chrome.storage.local.set({"status":"running"}, function() {
+		$("#test").removeClass("start").text("Stop Test");
+	});
+}
+
+function stop() {
+	chrome.storage.local.set({"status":"stopped"}, function() {
+		$("#test").addClass("start").text("Start Test");
 	});
 }
 
 
 $(window).load(function() {
+	
+	$("#test").click(function() {
+		$(this).hasClass("start") ? start() : stop();
+	});
+	
 	get();
 	
 	function drawHeatmap() {

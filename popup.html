@@ -1,6 +1,6 @@
 <head>
 <style>
-	body { font-family:sans-serif; }
+	body { font-family:sans-serif;min-width:500px; }
 	.heat {
 		min-height: 20px;
 		min-width: 20px;
@@ -8,6 +8,9 @@
 		-webkit-filter: blur(20px);
 		position:absolute;
 	}
+	#test { cursor:pointer;padding:6px 20px;background:red;color:#fff;border:none;border-radius:4px; }
+	#test.start { background:#ddd;color:#000; }
+	
 </style>
 
 	<script src="jquery.min.js"></script>
@@ -23,7 +26,9 @@ Stop Recording
 	<ul class="list">
 	</ul>
 	
-	<button class="draw-heatmap">Draw Heatmap</button>
+	<!--<button class="draw-heatmap">Draw Heatmap</button>-->
+	
+	<button id="test" class="start">Start Test</button>
 	
 
 </body>
