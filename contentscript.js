@@ -30,7 +30,7 @@ function networkInfo() {
 		var duration = (endTime - startTime) / 1000;
 		var bitsLoaded = downloadSize * 8;
 		var speedKbps = (Math.round(bitsLoaded / duration) / 1024).toFixed(2);
-		data.networkSpeed = speedKbps;
+		data.networkSpeed = parseFloat(speedKbps);
 	}
 }
 
@@ -48,12 +48,12 @@ function clientInfo() {
 function m() {
 	// Track mouse movement
 	$(window).mousemove(function() {
-		var timestamp =  String((new Date).getTime()),
-			x = this.event.clientX,
+		//var timestamp =  String((new Date).getTime()),
+		var x = this.event.clientX,
 			y = this.event.clientY + $(this).scrollTop(); // account for scrolled down
-		var d = {};
-		d[timestamp] = [x, y];
-		data.mouseposition.push(d);
+		//var d = {};
+		var arr = [x,y];
+		data.mouseposition.push(arr);
 	});
 }
 
@@ -88,7 +88,7 @@ function c() {
 
 
 function init() {
-	//console.log("init");
+	console.log("init");
 	// Initialize tracking
 	networkInfo();
 	clientInfo();
@@ -97,27 +97,56 @@ function init() {
 	m();
 }
 
-init();
+chrome.storage.local.get('status', function(items) {
+	console.log(items["status"]);
+	if (items["status"] == "running") {
+		init();
+	}
+});
+
+// Listener for message from popup
+chrome.extension.onMessage.addListener(function(request,sender,sendResponse) {
+    alert("rec");
+	if (request.action === "start" ) {
+        //init();
+		sendResponse( {data:"success"} );
+    }
+});
+
+
 
 // Store data on unload
 window.onbeforeunload = function() {
 	// Log time on page
-	data.timeOnPage = ((new Date()) - st) / 1000;
+	data.timeOnPage = ((new Date()) - st);
 	
-	var itemTitle = "usability|" + window.location.href;
+	var itemTitle = window.location.href;
 	var obj = {};
 	obj[itemTitle] = JSON.stringify(data);
-	console.log(obj);
 	
-	//localStorage.setItem(itemTitle, JSON.stringify(data));
-	chrome.storage.local.set(obj, function() {
-		console.log(itemTitle)
-	});
+	chrome.storage.local.get(null, function(items) {
+		var name = items.currentTestName;
+		
+		if (typeof(items.tests) == 'undefined') { // first run
+			items.tests = {};
+		}
+		
+		if (typeof(items.tests[name]) == 'undefined') { // first run for a given test
+			items.tests[name] = [];
+		}
+		
+		items.tests[name].push(data);
+		
+		chrome.storage.local.set(items, function() {
+			console.log(itemTitle)
+		});
+		console.log(JSON.stringify(data));
+		return "wait";
+	});	
 	
 	// chrome.storage.local.set({"test": Math.random()}, function() {
 		// console.log("saved2	")
 	// });
-	return 'Your browsing data has been saved in local storage';
 }
 
 // Retrieve the data (todo: parse/text it)
