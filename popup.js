@@ -1,15 +1,26 @@
 function get() {
 	chrome.storage.local.get(null, function(items) {
-		// if (items.status == "running") {
-			// $("#test").addClass("start");
-		// } else {
-			// $("#test").removeClass("start");
-		// }
-		var b = Object.keys(items);
+		if (items.status == "running") {
+			startHandler();
+		} else {
+			stopHandler();
+		}
+		
+		var limit = 10
+		var b = Object.keys(items); // todo: most recent first
 		for (var a in b) {
-			if (b[a].indexOf("usability|") == 0) {
+			if (b[a].indexOf("usability|") == 0 && a < limit) { // Limit to most recent 10
 				var obj = JSON.parse(items[b[a]]);
-				$("ul.list").append("<li><a href='" + obj.url + "'>" + obj.title + "</a></li>");
+				
+				var truncTitle = obj.title.substring(0,60).length < obj.title.length ? obj.title.substring(0,60) + "..." : obj.title;
+				var button = 
+				
+				$("ul.list").append("<li><a href='" + obj.url + "'>" + truncTitle + "</a><br /><small>" +
+					"Mouse: " + obj.mouseposition.length + " | " +
+					"Clicks: " + obj.click.length + " | " +
+					"Keys: " + obj.keypress.length +
+					
+					"</small></li>");
 			}
 		}
 	});
@@ -17,24 +28,43 @@ function get() {
 
 function start() {
 	chrome.storage.local.set({"status":"running"}, function() {
-		$("#test").removeClass("start").text("Stop Test");
+		startHandler();
 	});
 }
 
 function stop() {
 	chrome.storage.local.set({"status":"stopped"}, function() {
-		$("#test").addClass("start").text("Start Test");
+		stopHandler();
 	});
 }
+
+function startHandler() {
+	$("#test").removeClass("start").text("Stop Test");
+	chrome.browserAction.setBadgeText({text:"Live"});
+}
+
+function stopHandler() {
+	$("#test").addClass("start").text("Start Test");
+	chrome.browserAction.setBadgeText({text:""});
+}
+
+
 
 
 $(window).load(function() {
 	
+	// Start/stop handler
 	$("#test").click(function() {
 		$(this).hasClass("start") ? start() : stop();
 	});
 	
+	// Close handler
+	$(".close").click(function() {
+		window.close();
+	});
+	
 	get();
+	
 	
 	function drawHeatmap() {
 		
@@ -49,18 +79,7 @@ $(window).load(function() {
 			$("body").append(el);
 		}	
 	}
-	
-	
-	// Init the list
-	
-	chrome.storage.local.get(null, function(items) {
-		var b = Object.keys(items);
-		for (var a in b) {
-			if (b.indexOf("usability|") == 0) {
-				$("ul.list").append("<li>" + items[b] + "</li>");
-			}
-		}
-	});
+
 	
 	// Add handler to button
 	$(".draw-heatmap").click(drawHeatmap);

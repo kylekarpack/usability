@@ -1,6 +1,6 @@
 <head>
-<style>
-	body { font-family:sans-serif;min-width:500px; }
+<style type="text/css">
+	body { font-family:sans-serif;min-width:550px;padding:20px 0 15px 30px;margin:0; }
 	.heat {
 		min-height: 20px;
 		min-width: 20px;
@@ -8,9 +8,31 @@
 		-webkit-filter: blur(20px);
 		position:absolute;
 	}
-	#test { cursor:pointer;padding:6px 20px;background:red;color:#fff;border:none;border-radius:4px; }
-	#test.start { background:#ddd;color:#000; }
+	.tests { max-height:350px;overflow-y:auto; }
+	.list { padding:0 0 25px;list-style:none; }
+	.list li { line-height: .9; margin-bottom: 12px; }
+	.list a { font-size:14px;color:#2585D1; }
+	.list small { font-size:11px;color:#999; }
+	.tools { margin-bottom:20px; }
 	
+	#test { cursor:pointer;padding:6px 20px;background:red;color:#fff;border:none;border-radius:4px; }
+	#test.start { background:#eee;border:1px solid #ccc;color:#000; }
+	.close { font-size:32px;color:#ddd;text-shadow:0 0 1px #999;position:absolute;right:20px;top:0;cursor:pointer;padding:10px; }
+	.close:hover { color:#eee;text-shadow:0 0 1px #bbb; }
+	
+	/* Polish */
+	::-webkit-scrollbar{width:12px}
+	::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 5px rgba(0,0,0,0.2);-webkit-border-radius:10px;border-radius:10px}
+	::-webkit-scrollbar-thumb{-webkit-border-radius:10px;border-radius:10px;background:rgba(150,150,150,0.8);-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.4)}
+	*:focus { outline: 0; }
+	.blur { 
+		background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 40%,rgba(255,255,255,1) 100%);
+		height: 75px;
+		position: fixed;
+		bottom: 0;
+		width: 90%;
+		left: 0; 
+	}
 </style>
 
 	<script src="jquery.min.js"></script>
@@ -18,17 +40,21 @@
 </head>
 
 <body>
-<!--
-Start Recording
-
-Stop Recording
--->
-	<ul class="list">
-	</ul>
+	<div class="tools">
+		<button id="test" class="start">Start Test</button>
+		<span class="close">&times;</span>
+	</div>
+	
+	<div class="tests">
+		<ul class="list">
+			<!-- Content here -->
+		</ul>
+	</div>
+	<div class="blur"></div>
 	
 	<!--<button class="draw-heatmap">Draw Heatmap</button>-->
 	
-	<button id="test" class="start">Start Test</button>
+	
 	
 
 </body>
