@@ -1,9 +1,9 @@
-function get() {
+function get(target) {
 	chrome.storage.local.get(null, function(items) {
 		if (items.status == "running") {
-			startHandler(items.currentTestName);
+			startUI(items.currentTestName);
 		} else {
-			stopHandler();
+			stopUI();
 		}
 		
 		var limit = 10;
@@ -24,22 +24,27 @@ function get() {
 					avgSpeed = 0;
 				
 				for (var i in obj) {
-					pageList += "<a class='more' href='" + obj[i].url + "'>" + obj[i].title + "</a>" +
+					var cl = obj[i].url == target ? "current" : "";
+					pageList += "<a class='more " + cl + "' href='" + obj[i].url + "'>" + obj[i].title + "</a>" +
 					"<div class='info'>" + obj[i].mouseposition.join(", ") + "</div>" +
 					" | ";
 					totalClicks += obj[i].click.length;
 					totalMouse += obj[i].mouseposition.length;
-					time += obj[i].timeOnPage;
+					var addTime = isNaN(parseInt(obj[i].timeOnPage)) ? 0 : obj[i].timeOnPage;
+					time += addTime;
 					avgSpeed += parseFloat(obj[i].networkSpeed);
-						console.log(obj[i]);
 				}
 				
-				avgSpeed = avgSpeed / obj.length;
 				
-				var timeStr = Math.floor(time / 60) + ":" + Math.round(time % 60);
+				avgSpeed = avgSpeed / obj.length;
+				var t = new Date(time);
+				var secStr = t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds();
+				
+				var timeStr = t.getMinutes() + ":" + secStr;
+				
 				
 				$("ul.list").append("<li><span class='title'>" + b[a] + "</span><br /><small>" + 
-					"Connection Speed: " + avgSpeed + "<br />" +
+					"Connection Speed: " + (Math.round(avgSpeed * 100) / 100) + "<br />" +
 					"Time: " + timeStr + "<br />" +
 					"Pages: " + pageList + "<br />" +
 					"Mouse: " + totalMouse + "<br />" +
@@ -50,14 +55,13 @@ function get() {
 			}
 		}
 		
-		$("a.more").click(function(e) {
-			e.preventDefault();
-			// var url = $(this).attr("href"),
-				// test = $(this).parent().parent().find(".title").text();
-			// $(this).after($("<div>").html(
-				// url + "   " + test
-			// ));
-			$(this).siblings(".info").show();
+		// because of dumb extension behavior
+		$("a.more").not(".current").click(function(e) {
+			window.open($(this).attr("href"));
+		});
+		
+		$("a.current").click(function(e) {
+			dom();
 		});
 		
 		if (!itemsFound) {
@@ -76,7 +80,7 @@ function test() {
 }
 
 function start() {
-	var n = $("#name").val() !== "" ? $("#name").val() : "Test started at " + (new Date).toString();
+	var n = $("#name").val() !== "" ? $("#name").val() : "Test started at " + (new Date).toLocaleString();
 	chrome.storage.local.set({"status":"running", "currentTestName": n}, function() {
 		startHandler();
 	});
@@ -88,26 +92,37 @@ function stop() {
 	});
 }
 
-// todo: fix
-function startHandler(testName) {
+function startUI(testName) {
 	$("#test").removeClass("start").text("Stop Test");
 	chrome.browserAction.setBadgeText({text:"Live"});
 	$("#name").val(testName).prop("disabled", true);
+}
+
+function stopUI() {
+	$("#test").addClass("start").text("Start Test");
+	chrome.browserAction.setBadgeText({text:""});
+	$("#name").val("").prop("disabled", false);
+}
+
+function startHandler(testName) {
+	startUI();
 	
-	// chrome.tabs.getSelected(null, function(tab) {
-		// console.log(tab);
-		// chrome.tabs.sendRequest(tab.id, { method: 'init', tabid: tab.id}, function(r) { 
-			// console.log(r.data); 
-		// });
-		// );
-	// });
+	chrome.tabs.getSelected(null, function(tab) {
+	  chrome.tabs.sendRequest(tab.id, {action: "start"}, function(response) {
+		//silence
+	  });
+	});
 	
 }
 
 function stopHandler() {
-	$("#test").addClass("start").text("Start Test");
-	chrome.browserAction.setBadgeText({text:""});
-	$("#name").val("").prop("disabled", false);
+	stopUI();
+	
+	chrome.tabs.getSelected(null, function(tab) {
+	  chrome.tabs.sendRequest(tab.id, {action: "stop"}, function(response) {
+		//silence
+	  });
+	});
 
 }
 
@@ -135,12 +150,16 @@ function drawHeatmap(testName, pageName) {
 		}	
 		
 	});
-	
-
-	
 }
 
-
+function dom() {
+	chrome.tabs.getSelected(null, function(tab) {
+	  // Send a request to the content script.
+	  chrome.tabs.sendRequest(tab.id, {action: "heat"}, function(response) {
+		console.log(response);
+	  });
+	});
+}
 
 
 $(window).load(function() {
@@ -155,9 +174,16 @@ $(window).load(function() {
 		window.close();
 	});
 	
-	get();
+	chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
+		 var target = arrayOfTabs[0].url;
+		 get(target);
+	  });
+	
+	
 	
 	// Add handler to button
 	$(".draw-heatmap").click(drawHeatmap);
+	
+	
 		
 });
