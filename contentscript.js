@@ -1,8 +1,10 @@
 // TODO
-// Parse client info
-// Store task-by-task, not page by page
+// Parse client info, display it
+// one-click heatmaps
+// add click data, keypresses, etc to heatmap
+// 
 
-// Need to implement chrome.storage
+
 
 // Build the data object (globalize it)
 var st,
@@ -161,9 +163,9 @@ function drawHeatmap(testName) {
 	
 	var config = {
         element: document.getElementById("heatmapArea"),
-        radius: 30,
+        radius: 40,
         opacity: 50,
-		gradient: { 0: "rgba(0,0,255,0)", 0.4: "rgb(0,0,255)", 0.6: "rgb(0,200,200)", 0.75: "rgb(0,255,100)",0.8: "rgb(0,255,0)", 0.9: "yellow", 0.985: "rgb(250,150,0)", 0.995: "rgb(255,0,0)" }
+		gradient: { 0.2: "rgb(0,0,255)", 0.3: "rgb(0,100,255)", 0.4: "rgb(0,200,200)", 0.5: "rgb(0,255,100)",0.7: "rgb(0,255,0)", 0.9: "rgb(100,255,0)", 0.98: "yellow", 0.992: "rgb(250,150,0)", 0.995: "rgb(255,0,0)" }
     };
     
     //creates and initializes the heatmap
@@ -185,7 +187,7 @@ function drawHeatmap(testName) {
 		}
 		
 		for (datum in data) {
-			if (data[datum][0] > 1 && data[datum][1] > 1) {
+			if (data[datum][0] > 0 && data[datum][1] > 0) {
 				heatmap.store.addDataPoint(data[datum][0], data[datum][1]);
 			}
 		}

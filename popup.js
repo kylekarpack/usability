@@ -7,64 +7,78 @@ function get(target) {
 		}
 		
 		var limit = 10;
-		var b = Object.keys(items.tests); // todo: most recent first
-		var itemsFound = false;
-		for (var a in b) {
-			if (a < limit) { // Limit to most recent 10
-				var obj = items.tests[b[a]];
-				//var button = 
-				itemsFound = true;
-				
-				var pageList = "",
-					totalClicks = 0,
-					totalMouse = 0,
-					time = 0,
-					avgSpeed = 0;
-				
-				for (var i in obj) {
-					var cl = obj[i].url == target ? "current" : "";
-					if (pageList.indexOf(obj[i].url) == -1) {
-						pageList += "<a class='more " + cl + "' href='" + obj[i].url + "'>" + obj[i].title + "</a>" +
-						"<div class='info'>" + obj[i].mouseposition.join(", ") + "</div>" +
-						" | ";
-					}
-					totalClicks += obj[i].click.length;
-					totalMouse += obj[i].mouseposition.length;
-					var addTime = isNaN(parseInt(obj[i].timeOnPage)) ? 0 : obj[i].timeOnPage;
-					time += addTime;
-					avgSpeed += parseFloat(obj[i].networkSpeed);
-				}
-				
-				
-				avgSpeed = avgSpeed / obj.length;
-				var t = new Date(time);
-				var secStr = t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds();
-				
-				var timeStr = t.getMinutes() + ":" + secStr;
-				
-				
-				$("ul.list").append("<li><span class='title'>" + b[a] + "</span><br /><small>" + 
-					"Connection Speed: " + (Math.round(avgSpeed * 100) / 100) + "<br />" +
-					"Time: " + timeStr + "<br />" +
-					"Pages: " + pageList + "<br />" +
-					"Mouse: " + totalMouse + "<br />" +
-					"Clicks: " + totalClicks +
-					// "Keys: " + obj.keypress.length +
+		if (typeof(items.tests) == 'object') {
+			var b = Object.keys(items.tests); // todo: most recent first
+			for (var a in b) {
+				if (a < limit) { // Limit to most recent 10
+					var obj = items.tests[b[a]];
+					//var button = 
 					
-					"</small></li>");
+					var pageList = "",
+						totalClicks = 0,
+						totalMouse = 0,
+						time = 0,
+						avgSpeed = 0;
+					
+					for (var i in obj) {
+						var cl = obj[i].url == target ? "current" : "";
+						if (pageList.indexOf(obj[i].url) == -1) {
+							pageList += "<a class='more " + cl + "' href='" + obj[i].url + "'>" + obj[i].title + "</a>" +
+							"<div class='info'>" + obj[i].mouseposition.join(", ") + "</div>" +
+							" | ";
+						}
+						totalClicks += obj[i].click.length;
+						totalMouse += obj[i].mouseposition.length;
+						var addTime = isNaN(parseInt(obj[i].timeOnPage)) ? 0 : obj[i].timeOnPage;
+						time += addTime;
+						avgSpeed += parseFloat(obj[i].networkSpeed);
+					}
+					
+					
+					avgSpeed = avgSpeed / obj.length;
+					var t = new Date(time);
+					var secStr = t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds();
+					
+					var timeStr = t.getMinutes() + ":" + secStr;
+					
+					
+					$("ul.list").append("<li><span class='title'>" + b[a] + "</span><span class='delete'></span><br /><small>" + 
+						"Connection Speed: " + (Math.round(avgSpeed * 100) / 100) + "<br />" +
+						"Time: " + timeStr + "<br />" +
+						"Pages: " + pageList + "<br />" +
+						"Mouse: " + totalMouse + "<br />" +
+						"Clicks: " + totalClicks +
+						// "Keys: " + obj.keypress.length +
+						
+						"</small></li>");
+				}
 			}
-		}
+			
+			// because of dumb extension behavior
+			$("a.more").not(".current").click(function(e) {
+				window.open($(this).attr("href"));
+			});
+			
+			$("a.current").click(function(e) {
+				dom();
+			});
+			
+			
+			$(".delete").click(function() {
+				var li = $(this).parent();
+				var key = li.find(".title").text();
+				
+				if (confirm("Are you sure you want to delete " + key + "? This cannot be undone")) {
+					chrome.storage.local.get(null, function(items) {
+						delete items.tests[key];
+						chrome.storage.local.set(items,function() {
+							li.slideUp();
+						});
+					});
+				}
+			});
 		
-		// because of dumb extension behavior
-		$("a.more").not(".current").click(function(e) {
-			window.open($(this).attr("href"));
-		});
-		
-		$("a.current").click(function(e) {
-			dom();
-		});
-		
-		if (!itemsFound) {
+		} else { 
 			$("ul.list").append("<li>Sorry, no tests are stored yet</li>");
 		}
 	});
