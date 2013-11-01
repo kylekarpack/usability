@@ -129,7 +129,8 @@ function stopHandler() {
 function dom() {
 	chrome.tabs.getSelected(null, function(tab) {
 	  // Send a request to the content script.
-	  chrome.tabs.sendRequest(tab.id, {action: "heat"}, function(response) {
+	  var curr = $(".current").eq(0).parent().parent().find(".title").text();
+	  chrome.tabs.sendRequest(tab.id, {action: "heat", testName: curr}, function(response) {
 		console.log(response);
 	  });
 	});
