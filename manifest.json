@@ -17,7 +17,7 @@
   "content_scripts": [
 	{
 	"matches": ["http://*/*"],
-	"js": ["jquery.min.js", "contentscript.js"]
+	"js": ["jquery.min.js", "heatmap.js", "contentscript.js"]
 	}
   ]
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<div style="height:900px" id="heatmapArea"></div>
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="heatmap.js"></script>
+<script type="text/javascript">
+window.onload = function(){
+ 
+    // heatmap configuration
+    var config = {
+        element: document.getElementById("heatmapArea"),
+        radius: 40,
+        opacity: 50
+    };
+    
+    //creates and initializes the heatmap
+    var heatmap = h337.create(config);
+ 
+    // let's get some data
+    var generateData = function(){ 
+                    var max = (Math.random()*100+1) >> 0,
+                        data = [],
+                        length = 500,
+                        width = $(window).width(),
+                        height = $(window).height();
+
+                    while(length--){
+                        data.push({
+                            x: (Math.random()*width) >> 0,
+                            y: (Math.random()*height) >> 0,
+                            count: (Math.random()*max) >> 0
+                        });
+                    }
+
+                    return {
+                        max: max,
+                        data: data
+                    };
+                };
+
+	
+	var data = generateData();
+	console.log(data);
+	data = data.data;
+	
+	for (datum in data) {
+		console.log(data[datum]);
+		console.log(data[datum]);
+		if (data[datum].x > 1 && data[datum].y > 1) {
+			heatmap.store.addDataPoint(data[datum].x, data[datum].y);
+		}
+	}
+};
+</script>
+</html>

@@ -126,32 +126,6 @@ function stopHandler() {
 
 }
 
-
-function drawHeatmap(testName, pageName) {
-	chrome.storage.local.get(null, function(items) {
-		var obj = items.tests[testName];
-		var a;
-		for (var i in obj) {
-			if (obj[i].url == pageName) {
-				a = obj[i];
-			}
-		}
-		
-		a = a.mouseposition;
-		
-		console.log(a);
-		
-		for (var e in a) {
-			var coords = (a[e][Object.keys(a[e])[0]]);
-			var el = $("<div>").addClass("heat");
-			el.css("left", coords[0]);
-			el.css("top", coords[1]);
-			$("body").append(el);
-		}	
-		
-	});
-}
-
 function dom() {
 	chrome.tabs.getSelected(null, function(tab) {
 	  // Send a request to the content script.
@@ -178,12 +152,4 @@ $(window).load(function() {
 		 var target = arrayOfTabs[0].url;
 		 get(target);
 	  });
-	
-	
-	
-	// Add handler to button
-	$(".draw-heatmap").click(drawHeatmap);
-	
-	
-		
 });
