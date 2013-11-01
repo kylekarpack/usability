@@ -12,8 +12,6 @@ function get(target) {
 		for (var a in b) {
 			if (a < limit) { // Limit to most recent 10
 				var obj = items.tests[b[a]];
-				
-				//var truncTitle = obj.title.substring(0,60).length < obj.title.length ? obj.title.substring(0,60) + "..." : obj.title;
 				//var button = 
 				itemsFound = true;
 				
@@ -25,9 +23,11 @@ function get(target) {
 				
 				for (var i in obj) {
 					var cl = obj[i].url == target ? "current" : "";
-					pageList += "<a class='more " + cl + "' href='" + obj[i].url + "'>" + obj[i].title + "</a>" +
-					"<div class='info'>" + obj[i].mouseposition.join(", ") + "</div>" +
-					" | ";
+					if (pageList.indexOf(obj[i].url) == -1) {
+						pageList += "<a class='more " + cl + "' href='" + obj[i].url + "'>" + obj[i].title + "</a>" +
+						"<div class='info'>" + obj[i].mouseposition.join(", ") + "</div>" +
+						" | ";
+					}
 					totalClicks += obj[i].click.length;
 					totalMouse += obj[i].mouseposition.length;
 					var addTime = isNaN(parseInt(obj[i].timeOnPage)) ? 0 : obj[i].timeOnPage;
