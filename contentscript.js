@@ -157,12 +157,13 @@ function sanitize(store) {
 
 function drawHeatmap(testName) {
 	$("body").append("<div id='heatmapArea'></div>");
-	$("#heatmapArea").height($(window).height())
+	$("#heatmapArea").height($("body").height())
 	
 	var config = {
         element: document.getElementById("heatmapArea"),
         radius: 30,
-        opacity: 50
+        opacity: 50,
+		gradient: { 0: "rgba(0,0,255,0)", 0.4: "rgb(0,0,255)", 0.6: "rgb(0,200,200)", 0.75: "rgb(0,255,100)",0.8: "rgb(0,255,0)", 0.9: "yellow", 0.985: "rgb(250,150,0)", 0.995: "rgb(255,0,0)" }
     };
     
     //creates and initializes the heatmap
