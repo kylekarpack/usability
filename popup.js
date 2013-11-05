@@ -1,3 +1,15 @@
+
+// Listen for keyboard shortcuts
+chrome.commands.onCommand.addListener(function(command) {
+	if (command == "start_usability") {
+		start();
+	} else if (command == "stop_usability") {
+		stop();
+	}
+
+});
+
+
 function get(target) {
 	chrome.storage.local.get(null, function(items) {
 		if (items.status == "running") {
@@ -68,14 +80,14 @@ function get(target) {
 				var li = $(this).parent();
 				var key = li.find(".title").text();
 				
-				if (confirm("Are you sure you want to delete " + key + "? This cannot be undone")) {
+				//if (confirm("Are you sure you want to delete " + key + "? This cannot be undone")) {
 					chrome.storage.local.get(null, function(items) {
 						delete items.tests[key];
 						chrome.storage.local.set(items,function() {
 							li.slideUp();
 						});
 					});
-				}
+				//}
 			});
 		
 		} else { 

@@ -19,5 +19,21 @@
 	"matches": ["http://*/*"],
 	"js": ["jquery.min.js", "heatmap.js", "contentscript.js"]
 	}
-  ]
+  ],
+  "commands": {
+    "start_usability": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+A",
+        "mac": "Command+Shift+A"
+      },
+      "description": "Start Test"
+    },
+    "stop_usability": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Stop Test"
+    }
+  }
 }
