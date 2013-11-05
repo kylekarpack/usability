@@ -2,7 +2,8 @@
 // Parse client info, display it
 // one-click heatmaps
 // add click data, keypresses, etc to heatmap
-// 
+// keyboard shortcuts
+// websql?
 
 
 
@@ -159,11 +160,11 @@ function sanitize(store) {
 
 function drawHeatmap(testName) {
 	$("body").append("<div id='heatmapArea'></div>");
-	$("#heatmapArea").height($("body").height())
+	$("#heatmapArea").height($("body").height()); //buggy
 	
 	var config = {
         element: document.getElementById("heatmapArea"),
-        radius: 40,
+        radius: 30,
         opacity: 50,
 		gradient: { 0.2: "rgb(0,0,255)", 0.3: "rgb(0,100,255)", 0.4: "rgb(0,200,200)", 0.5: "rgb(0,255,100)",0.7: "rgb(0,255,0)", 0.9: "rgb(100,255,0)", 0.98: "yellow", 0.992: "rgb(250,150,0)", 0.995: "rgb(255,0,0)" }
     };
