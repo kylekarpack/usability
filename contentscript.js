@@ -8,6 +8,7 @@
 // windowing doesn't work on OSX!
 
 
+/*
 $(window).keyup(function(e) {
 	if (e.keyCode == 65 && e.altKey && e.shiftKey) {
 		chrome.runtime.sendMessage({action:'start'});
@@ -18,6 +19,7 @@ $(window).keyup(function(e) {
 	}
 	
 });
+*/
 
 
 // Build the data object (globalize it)
@@ -31,9 +33,9 @@ data.url = window.location.href;
 data.title = document.title;
 
 function networkInfo() {
-	var imageAddr = "https://presscdn.com/wp-content/uploads/2013/06/wordpress-cdn-map.png" + "?n=" + Math.random(); // Swap this for something real
+	var imageAddr = "https://presscdn.com/wp-content/uploads/2013/06/wordpress-cdn-map.png" + "?n=" + Math.random(); // Swap this for something real?
 	var startTime, endTime;
-	var downloadSize = 10000;
+	var downloadSize = 10000; // Todo: get correct size
 	var download = new Image();
 	download.onload = function () {
 		endTime = (new Date()).getTime();

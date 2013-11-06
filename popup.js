@@ -1,5 +1,6 @@
 
 // Listen for keyboard shortcuts
+// Todo: Fix bug not always working
 chrome.commands.onCommand.addListener(function(command) {
 	if (command == "start_usability") {
 		start();
