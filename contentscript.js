@@ -3,10 +3,8 @@
 // one-click heatmaps
 // add click data, keypresses, etc to heatmap
 // keyboard shortcuts
-// websql?
 
-// windowing doesn't work on OSX!
-
+// windowing doesn't work on OSX! Why?
 
 /*
 $(window).keyup(function(e) {
@@ -31,6 +29,7 @@ data.keypress = [];
 data.clientInfo = {};
 data.url = window.location.href;
 data.title = document.title;
+
 
 function networkInfo() {
 	var imageAddr = "https://presscdn.com/wp-content/uploads/2013/06/wordpress-cdn-map.png" + "?n=" + Math.random(); // Swap this for something real?
@@ -88,14 +87,10 @@ function k() {
 }
 
 function c() {
-	// track clicks
-	
-	// edit: track only ui elements:
-	
-	$("input, button, textarea, a, #my-timeline *").click(function() {
+	// track clicks on ui elements. Could modify to track all clicks?	
+	$("input, button, textarea, a").click(function() {
 	//$("*").click(function() {
 		var timestamp =  String((new Date).getTime()),
-			//which = this.nodeName + " " + this.className; // Need to improve this
 			which = this;
 			
 		var d = {};
@@ -204,8 +199,6 @@ function drawHeatmap(testName) {
 				heatmap.store.addDataPoint(data[datum][0], data[datum][1]);
 			}
 		}
-		
-		//console.log(target);
 	});
 	
 	
@@ -214,11 +207,8 @@ function drawHeatmap(testName) {
 			heatmap.store.addDataPoint(data[datum][0], data[datum][1]);
 		}
 	}
-	
-	
-	
-
 }
+
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	if (request.action == "heat") {
