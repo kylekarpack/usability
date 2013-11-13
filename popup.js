@@ -80,7 +80,14 @@ function get(target) {
 			$(".delete").click(function() {
 				var li = $(this).parent();
 				var key = li.find(".title").text();
+				var y = $("<button>").addClass("yn").text("Yes").click(yes);
+				var n = $("<button>").addClass("yn").text("No").click(no);
+				var $conf = $("<div>").addClass("confirm");
+				var $div = $("<div>").addClass("inner").html("Are you sure?<br />").append(y).append(n);
+				$conf.append($div);
+				$(this).after($conf).fadeIn();
 				
+				function yes() {
 				//if (confirm("Are you sure you want to delete " + key + "? This cannot be undone")) {
 					chrome.storage.local.get(null, function(items) {
 						delete items.tests[key];
@@ -89,6 +96,11 @@ function get(target) {
 						});
 					});
 				//}
+				}
+				
+				function no() {
+					$(".confirm").fadeOut();
+				}
 			});
 		
 		} else { 
