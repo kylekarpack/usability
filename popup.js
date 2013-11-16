@@ -109,14 +109,6 @@ function get(target) {
 	});
 }
 
-// todo - fix
-function test() {
-	chrome.extension.sendMessage({action: "start"},
-        function (response) {
-           console.log(response);
-        }
-	);
-}
 
 function start() {
 	var n = $("#name").val() !== "" ? $("#name").val() : "Test started at " + (new Date).toLocaleString();
@@ -156,7 +148,6 @@ function startHandler(testName) {
 
 function stopHandler() {
 	stopUI();
-	
 	chrome.tabs.getSelected(null, function(tab) {
 	  chrome.tabs.sendRequest(tab.id, {action: "stop"}, function(response) {
 		//silence

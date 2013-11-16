@@ -101,7 +101,6 @@ function c() {
 
 
 function init() {
-	console.log("init");
 	st = new Date();
 	// Initialize tracking
 	networkInfo();
@@ -122,10 +121,11 @@ chrome.storage.local.get('status', function(items) {
 // Store data on unload
 window.onbeforeunload = record;
 
-function record() {
-	chrome.storage.local.get('status', function(items) {
-		if (items["status"] == "running") {
+function record(andStop) {
 	
+	chrome.storage.local.get('status', function(items) {
+		
+		if (items["status"] == "running" || andStop == "stopit") {
 	
 			data.timeOnPage = ((new Date()) - st);
 			
@@ -147,21 +147,15 @@ function record() {
 				items.tests[name].push(data);
 				
 				chrome.storage.local.set(items, function() {
-					console.log(itemTitle)
-				});
-				console.log(JSON.stringify(data));
-				return "wait";
+					//silence is golden
+				});				
+				
 			});	
 		} // else, do nothing
+		
 	});
 }
 
-// Retrieve the data (todo: parse/text it)
-// Pass the name of the page to retrieve
-function retrieve(url) {
-	var retrievedObject = localStorage.getItem(url);
-	console.log('retrievedObject: ', JSON.parse(retrievedObject));
-}
 
 // Utility
 function sanitize(store) {
@@ -225,7 +219,8 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 		init();
 		sendResponse({dom: "init"});
 	} else if (request.action == "stop") {
-		record();
+		record("stopit");
+		
 		sendResponse({dom: "done"});
 	}
 });
