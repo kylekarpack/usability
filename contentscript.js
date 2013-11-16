@@ -123,31 +123,37 @@ chrome.storage.local.get('status', function(items) {
 window.onbeforeunload = record;
 
 function record() {
-	data.timeOnPage = ((new Date()) - st);
+	chrome.storage.local.get('status', function(items) {
+		if (items["status"] == "running") {
 	
-	var itemTitle = window.location.href;
-	var obj = {};
-	obj[itemTitle] = JSON.stringify(data);
 	
-	chrome.storage.local.get(null, function(items) {
-		var name = items.currentTestName;
-		
-		if (typeof(items.tests) == 'undefined') { // first run
-			items.tests = {};
-		}
-		
-		if (typeof(items.tests[name]) == 'undefined') { // first run for a given test
-			items.tests[name] = [];
-		}
-		
-		items.tests[name].push(data);
-		
-		chrome.storage.local.set(items, function() {
-			console.log(itemTitle)
-		});
-		console.log(JSON.stringify(data));
-		return "wait";
-	});	
+			data.timeOnPage = ((new Date()) - st);
+			
+			var itemTitle = window.location.href;
+			var obj = {};
+			obj[itemTitle] = JSON.stringify(data);
+			
+			chrome.storage.local.get(null, function(items) {
+				var name = items.currentTestName;
+				
+				if (typeof(items.tests) == 'undefined') { // first run
+					items.tests = {};
+				}
+				
+				if (typeof(items.tests[name]) == 'undefined') { // first run for a given test
+					items.tests[name] = [];
+				}
+				
+				items.tests[name].push(data);
+				
+				chrome.storage.local.set(items, function() {
+					console.log(itemTitle)
+				});
+				console.log(JSON.stringify(data));
+				return "wait";
+			});	
+		} // else, do nothing
+	});
 }
 
 // Retrieve the data (todo: parse/text it)
