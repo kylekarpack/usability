@@ -2,7 +2,7 @@
 	"currentTestName" : "NotApplicable",
 	"status" : "stopped",
 	"tests" : {
-		"Alex Task One" : [{
+		"Alex Task 1" : [{
 				"click" : [],
 				"clientInfo" : {
 					"appCodeName" : "Mozilla",
@@ -589,7 +589,7 @@
 				"url" : "http://kickass.to/usearch/Pacific%20Rim/"
 			}
 		],
-		"Alex Task Two" : [{
+		"Alex Task 2" : [{
 				"click" : [{
 						"1384633111238" : {
 							"accept" : "",
@@ -1950,7 +1950,7 @@
 				"url" : "http://kickass.to/adobe-photoshop-cs6-13-0-final-extended-eng-jpn-mac-os-x-chingliu-t6355553.html#main"
 			}
 		],
-		"Alex Task Three" : [{
+		"Alex Task 3" : [{
 				"click" : [{
 						"1384633268631" : {
 							"accessKey" : "",
@@ -4733,7 +4733,7 @@
 				"url" : "http://kickass.to/supernatural-season-1-t1572707.html#main"
 			}
 		],
-		"Katie Task One" : [{
+		"Katie Task 1" : [{
 				"click" : [],
 				"keypress" : [],
 				"mouseposition" : [[701, 77], [643, 72], [331, 1], [329, 5]],
@@ -4788,7 +4788,7 @@
 				"url" : "http://kickass.to/usearch/pacific%20rim%202013/"
 			}
 		],
-		"Katie Task Two" : [{
+		"Katie Task 2" : [{
 				"click" : [{}, {}, {}, {
 						"1384632848745" : null
 					}
@@ -4850,7 +4850,7 @@
 				"url" : "http://kickass.to/usearch/Photoshop%20category:mac-software%20verified:1/"
 			}
 		],
-		"Katie Task Three" : [{
+		"Katie Task 3" : [{
 				"click" : [{}
 
 				],
@@ -5020,7 +5020,7 @@
 				"url" : "http://kickass.to/terra-nova-tv25729/"
 			}
 		],
-		"Kristin Task One" : [{
+		"Kristin Task 1" : [{
 				"click" : [{}
 
 				],
@@ -5079,7 +5079,7 @@
 				"url" : "http://kickass.to/pacific-rim-2013-1080p-brrip-x264-yify-t7977455.html#main"
 			}
 		],
-		"Kristin Task Two" : [{
+		"Kristin Task 2" : [{
 				"click" : [{}, {}, {}, {
 						"1384632853384" : null
 					}, {}, {
@@ -5248,7 +5248,7 @@
 				"url" : "http://kickass.to/adobe-photoshop-cs6-13-0-final-extended-eng-jpn-mac-os-x-chingliu-t6355553.html#main"
 			}
 		],
-		"Kristin Task Three" : [{
+		"Kristin Task 3" : [{
 				"click" : [{}, {}, {
 						"1384633245063" : null
 					}
@@ -5494,6 +5494,6 @@
 				"url" : "http://kickass.to/perception-season-2-hdtv-x264-coot-t7794788.html#main"
 			}
 		]
-		
+
 	}
 }
