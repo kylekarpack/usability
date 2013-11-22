@@ -7,7 +7,15 @@ var timeData = [],
 	chart;
 
 $(window).load(function() {
+	
+	// UI Stuff
+	$("#log").click(function() {
+		chart.yAxis[0].isLog = !(chart.yAxis[0].isLog);
+		chart.redraw();
+	});
 
+
+	// Sorry this is a mess...
 	chrome.storage.local.get(null, function(data) { 
 		var t = data.tests;
 		var count = 0;
@@ -58,7 +66,7 @@ $(window).load(function() {
 	});
 
 	
-     chart =  $('#chart').highcharts({
+     chart = $('#chart').highcharts({
             chart: {
                 type: 'column'
             },
@@ -73,10 +81,6 @@ $(window).load(function() {
             },
             yAxis: {
                 min: 1,
-                title: {
-                    text: 'Time On Task',
-                    align: 'high'
-                },
                 labels: {
                     overflow: 'justify'
                 },
@@ -86,7 +90,9 @@ $(window).load(function() {
                 column: {
                     dataLabels: {
                         enabled: true
-                    }
+                    },
+					groupPadding:0.1,
+					pointPadding:0.05
                 }
             },
             credits: {
