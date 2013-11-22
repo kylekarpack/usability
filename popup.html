@@ -1,68 +1,28 @@
 <head>
-<style type="text/css">
-	body { font-family:sans-serif;min-width:550px;padding:20px 0 15px 30px;margin:0; }
-	.heat {
-		min-height: 20px;
-		min-width: 20px;
-		background: black;
-		-webkit-filter: blur(20px);
-		position:absolute;
-	}
-	.tests { max-height:350px;overflow-y:auto; }
-	.list { padding:0 0 25px;list-style:none; }
-	.list li { line-height: .9; margin-bottom: 12px; }
-	.list a { font-size:14px;color:#2585D1;text-decoration:none; }
-	.list a.current { color:red; }
-	.list span.delete { width:16px;height:16px;background:url("delete.png") no-repeat; display:inline-block;margin:0 10px -2px;cursor:pointer; }
-	.list small { font-size:11px;color:#999; }
-	.list small a { font-size:11px; }
-	.list .info { display:none }
-	.tools { margin-bottom:20px; }
-	
-	input { margin:0;padding:6px;border:1px solid #ddd;box-shadow:0 0 4px #eee;border-radius:4px;-webkit-transition:box-shadow .3s ease-in-out;border-top-right-radius:0;border-bottom-right-radius:0; }
-	input:focus { box-shadow:inset 0 0 4px rgba(37,133,209, .5), 0 0 4px #eee; }
-	#test { margin-left:-5px;cursor:pointer;padding:6px 20px;background:red;color:#fff;border:none;border-radius:4px;border-top-left-radius:0;border-bottom-left-radius:0;-webkit-transition:background .3s ease-in-out; }
-	#test.start:hover { background:#f7f7f7; }
-	#test.start { background:#eee;border:1px solid #ccc;color:#000; }
-	.close { font-size:32px;color:#ddd;position:absolute;right:20px;top:0;cursor:pointer;padding:10px; }
-	.close:hover { color:#eee; }
-	
-	.confirm { color:red;background: rgba(0,0,0,.3);position: fixed;width: 100%;height: 100%;top: 0;left: 0;z-index: 100;text-align:center; }
-	.confirm .inner { background:#fff;padding:2%;max-width:50%;box-shadow:0 0 20px rgba(0,0,0,.7);margin:20% auto; }
-	
-	/* Polish */
-	::-webkit-scrollbar{width:12px}
-	::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 5px rgba(0,0,0,0.2);-webkit-border-radius:10px;border-radius:10px}
-	::-webkit-scrollbar-thumb{-webkit-border-radius:10px;border-radius:10px;background:rgba(150,150,150,0.8);-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.4)}
-	*:focus { outline: 0; }
-	.blur { 
-		background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 40%,rgba(255,255,255,1) 100%);
-		height: 75px;
-		position: fixed;
-		bottom: 0;
-		width: 90%;
-		left: 0; 
-	}
-</style>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 
-	<script src="jquery.min.js"></script>
-	<script src="popup.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/popup.js"></script>
 </head>
 
-<body>
+<body class="popup">
 	<div class="tools">
 		<input id="name" type="text" placeholder="Test Name" />
 		<button id="test" class="start">Start Test</button>
 		
 		<span class="close">&times;</span>
+		<div class="clear"></div>
+		<button id="charts">Show Charts</button>
 	</div>
 	
 	<div class="tests">
 		<ul class="list">
 			<!-- Content here -->
 		</ul>
+		
+		<div class="blur"></div>
 	</div>
-	<div class="blur"></div>
+	
 	
 	<!--<button class="draw-heatmap">Draw Heatmap</button>-->
 	

@@ -1,4 +1,3 @@
-
 // Listen for keyboard shortcuts
 // Todo: Fix bug not always working
 chrome.commands.onCommand.addListener(function(command) {
@@ -7,7 +6,6 @@ chrome.commands.onCommand.addListener(function(command) {
 	} else if (command == "stop_usability") {
 		stop();
 	}
-
 });
 
 
@@ -177,6 +175,10 @@ $(window).load(function() {
 	// Close handler
 	$(".close").click(function() {
 		window.close();
+	});
+	
+	$("#charts").click(function() {
+		window.open("charts.html");
 	});
 	
 	chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {

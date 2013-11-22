@@ -3,11 +3,11 @@
 
   "name": "Usability Test",
   "description": "This extension provides facilities for conducting usability tests on websites.",
-  "version": "0.2",
+  "version": "0.3",
   
   "icons": {
-	  "16":"icon-16.png",
-	  "64":"icon-64.png"
+	  "16":"img/icon-16.png",
+	  "64":"img/icon-64.png"
   },
 
   "permissions": [
@@ -15,14 +15,14 @@
 	"tabs"
   ],
   "browser_action": {
-    "default_icon": "icon-16.png",
+    "default_icon": "img/icon-16.png",
     "default_popup": "popup.html"
   },
   
   "content_scripts": [
 	{
 	"matches": ["http://*/*"],
-	"js": ["jquery.min.js", "heatmap.js", "contentscript.js"]
+	"js": ["js/jquery.min.js", "js/heatmap.js", "js/highcharts.js", "js/contentscript.js", "js/charts.js"]
 	}
   ],
   "commands": {
