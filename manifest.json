@@ -22,7 +22,7 @@
   "content_scripts": [
 	{
 	"matches": ["http://*/*"],
-	"js": ["js/jquery.min.js", "js/heatmap.js", "js/highcharts.js", "js/contentscript.js", "js/charts.js"]
+	"js": ["js/jquery.min.js", "js/heatmap.js", "js/contentscript.js"]
 	}
   ],
   "commands": {
