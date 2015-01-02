@@ -1,85 +1,188 @@
-angular.module("traffic", ["ui.bootstrap"])
-.controller("UiController", function($scope, $http) {
-	$scope.data = {};
-	$scope.showSettings = false;
-	database.init();
-	
-	$scope.init = function() {
-		$http.get("http://www.bing.com/maps/directions.ashx?d=0~1&w=" + $scope.global.homeAddress + "~" + $scope.global.workAddress + "&mode=D")
-			.success(function(d) {
-				storeData(d);
-				$scope.data = d.routeResults[0].routes[0].routeLegs[0].summary;		
-			})
+// Listen for keyboard shortcuts
+// Todo: Fix bug not always working
+chrome.commands.onCommand.addListener(function(command) {
+	if (command == "start_usability") {
+		start();
+	} else if (command == "stop_usability") {
+		stop();
 	}
+});
+
+
+function get(target) {
+	chrome.storage.local.get(null, function(items) {
+		if (items.status == "running") {
+			startUI(items.currentTestName);
+		} else {
+			stopUI();
+		}
 		
-	$scope.trafficScore = function() {
-		var score = Math.round(($scope.data.timeWithTraffic / $scope.data.time - 1) * 100)
-		return score;
-	}
+		var limit = 10;
+		if (typeof(items.tests) == 'object') {
+			var b = Object.keys(items.tests); // todo: most recent first
+			for (var a in b) {
+				if (a < limit) { // Limit to most recent 10
+					var obj = items.tests[b[a]];
+					//var button = 
+					
+					var pageList = "",
+						totalClicks = 0,
+						totalMouse = 0,
+						time = 0,
+						avgSpeed = 0;
+					
+					for (var i in obj) {
+						var cl = obj[i].url == target ? "current" : "";
+						if (pageList.indexOf(obj[i].url) == -1) {
+							pageList += "<a class='more " + cl + "' href='" + obj[i].url + "'>" + obj[i].title + "</a>" +
+							"<div class='info'>" + obj[i].mouseposition.join(", ") + "</div>" +
+							" | ";
+						}
+						totalClicks += obj[i].click.length;
+						totalMouse += obj[i].mouseposition.length;
+						var addTime = isNaN(parseInt(obj[i].timeOnPage)) ? 0 : obj[i].timeOnPage;
+						time += addTime;
+						avgSpeed += parseFloat(obj[i].networkSpeed);
+					}
+					
+					
+					avgSpeed = avgSpeed / obj.length;
+					var t = new Date(time);
+					var secStr = t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds();
+					
+					var timeStr = t.getMinutes() + ":" + secStr;
+					
+					
+					$("ul.list").append("<li><span class='title'>" + b[a] + "</span><span class='delete'></span><br /><small>" + 
+						"Connection Speed: " + (Math.round(avgSpeed * 100) / 100) + "<br />" +
+						"Time: " + timeStr + "<br />" +
+						"Pages: " + pageList + "<br />" +
+						"Mouse: " + totalMouse + "<br />" +
+						"Clicks: " + totalClicks +
+						// "Keys: " + obj.keypress.length +
+						
+						"</small></li>");
+				}
+			}
+			
+			// because of dumb extension behavior
+			$("a.more").not(".current").click(function(e) {
+				window.open($(this).attr("href"));
+			});
+			
+			$("a.current").click(function(e) {
+				dom();
+			});
+			
+			
+			$(".delete").click(function() {
+				var li = $(this).parent();
+				var key = li.find(".title").text();
+				var y = $("<button>").addClass("yn").text("Yes").click(yes);
+				var n = $("<button>").addClass("yn").text("No").click(no);
+				var $conf = $("<div>").addClass("confirm");
+				var $div = $("<div>").addClass("inner").html("Are you sure?<br />").append(y).append(n);
+				$conf.append($div);
+				$(this).after($conf).fadeIn();
+				
+				function yes() {
+				//if (confirm("Are you sure you want to delete " + key + "? This cannot be undone")) {
+					chrome.storage.local.get(null, function(items) {
+						delete items.tests[key];
+						chrome.storage.local.set(items,function() {
+							li.slideUp();
+						});
+					});
+				//}
+				}
+				
+				function no() {
+					$(".confirm").fadeOut();
+				}
+			});
+		
+		} else { 
+			$("ul.list").append("<li>Sorry, no tests are stored yet</li>");
+		}
+	});
+}
+
+
+function start() {
+	var n = $("#name").val() !== "" ? $("#name").val() : "Test started at " + (new Date).toLocaleString();
+	chrome.storage.local.set({"status":"running", "currentTestName": n}, function() {
+		startHandler();
+	});
+}
+
+function stop() {
+	chrome.storage.local.set({"status":"stopped"}, function() {
+		stopHandler();
+	});
+}
+
+function startUI(testName) {
+	$("#test").removeClass("start").text("Stop Test");
+	chrome.browserAction.setBadgeText({text:"Live"});
+	$("#name").val(testName).prop("disabled", true);
+}
+
+function stopUI() {
+	$("#test").addClass("start").text("Start Test");
+	chrome.browserAction.setBadgeText({text:""});
+	$("#name").val("").prop("disabled", false);
+}
+
+function startHandler(testName) {
+	startUI();
 	
-	$scope.getLocation = function(val) {
-	    return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
-	      params: {
-	        address: val,
-	        sensor: false
-	      }
-	    }).then(function(response){
-	      return response.data.results.map(function(item){
-	        return item.formatted_address;
-	      });
-	    });
-	  };
-	
-	chrome.storage.local.get("svg", function(data) {
-		$scope.svg = data.svg;
+	chrome.tabs.getSelected(null, function(tab) {
+	  chrome.tabs.sendRequest(tab.id, {action: "start"}, function(response) {
+		//silence
+	  });
 	});
 	
-	chrome.storage.sync.get("global", function(data) {
-		console.log(data);
-		$scope.global = data.global;
-		$scope.init();
-	})
-	
-	
-	$scope.settings = function() {
-		$scope.showSettings = !$scope.showSettings;
-		if (!$scope.showSettings) {
-			$scope.init();
-			$scope.saved = true;
-			setTimeout(function() {
-				$scope.saved = false;
-				$scope.$apply();
-			},2000);
-			chrome.storage.sync.set({ "global": $scope.global });
-		}
-		console.log($scope.showSettings);
-	}
-	
-	$scope.trend = function() {
-			
-	}
-	
-	
-	window.$scope = $scope;
-})
+}
 
-.filter("timeDisplay", function() {
-	return function(input) {
-		if (!input) {
-			return;
-		}
-	
-		var pad = function(val) {
-			return val >= 10 ? val : "0" + val;
-		}
-	
-		return Math.floor(input) + ":" + pad(Math.round(input % 1 * 60))
-	}
-})
+function stopHandler() {
+	stopUI();
+	chrome.tabs.getSelected(null, function(tab) {
+	  chrome.tabs.sendRequest(tab.id, {action: "stop"}, function(response) {
+		//silence
+	  });
+	});
 
-.filter("split", function() {
-	return function(input) {
-		input = input || "";
-		return input.split(",")[0]
-	}
-})
+}
+
+function dom() {
+	chrome.tabs.getSelected(null, function(tab) {
+	  // Send a request to the content script.
+	  var curr = $(".current").eq(0).parent().parent().find(".title").text();
+	  chrome.tabs.sendRequest(tab.id, {action: "heat", testName: curr}, function(response) {
+		console.log(response);
+	  });
+	});
+}
+
+
+$(window).load(function() {
+	
+	// Start/stop handler
+	$("#test").click(function() {
+		$(this).hasClass("start") ? start() : stop();
+	});
+	
+	// Close handler
+	$(".close").click(function() {
+		window.close();
+	});
+	
+	$("#charts").click(function() {
+		window.open("charts.html");
+	});
+	
+	chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
+		 var target = arrayOfTabs[0].url;
+		 get(target);
+	  });
+});
