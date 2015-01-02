@@ -1,44 +1,26 @@
 {
   "manifest_version": 2,
 
-  "name": "Usability Test",
-  "description": "This extension provides facilities for conducting usability tests on websites.",
-  "version": "0.3",
+  "name": "Traffalytics",
+  "description": "Learn when to leave work",
+  "version": "0.1",
   
   "icons": {
 	  "16":"img/icon-16.png",
 	  "64":"img/icon-64.png"
   },
-
-  "permissions": [
-    "storage",
-	"tabs"
-  ],
   "browser_action": {
     "default_icon": "img/icon-16.png",
     "default_popup": "popup.html"
   },
-  
-  "content_scripts": [
-	{
-	"matches": ["http://*/*"],
-	"js": ["js/jquery.min.js", "js/heatmap.js", "js/contentscript.js"]
-	}
-  ],
-  "commands": {
-    "start_usability": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+A",
-        "mac": "Command+Shift+A"
-      },
-      "description": "Start Test"
-    },
-    "stop_usability": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+S",
-        "mac": "Command+Shift+S"
-      },
-      "description": "Stop Test"
-    }
+   "permissions": [
+   		"http://*.bing.com/",
+        "https://*.bing.com/",
+        "storage",
+		"tabs",
+		"notifications"
+   ],
+  "background": {
+    "scripts": ["js/jquery.min.js", "js/db.js", "js/shared.js", "js/background.js"]
   }
 }

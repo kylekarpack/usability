@@ -1,31 +1,115 @@
 <head>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 
 	<script src="js/jquery.min.js"></script>
+	<script src="js/angular.min.js"></script>
+	<script src="js/ui-bootstrap-0.12.0.min.js"></script>
+	<script src="js/jquery.geocompletegeocomplete.min.js"></script>
+	<script src="js/db.js"></script>
+	<script src="js/shared.js"></script>
 	<script src="js/popup.js"></script>
 </head>
 
-<body class="popup">
-	<div class="tools">
-		<input id="name" type="text" placeholder="Test Name" />
-		<button id="test" class="start">Start Test</button>
+<body class="popup" ng-app="traffic" ng-csp="">
+	<div ng-controller="UiController" class="row">
+		<script type="text/ng-template" id="template/typeahead/typeahead-popup.html">
+			  <ul class="dropdown-menu" ng-show="isOpen()" ng-style="{top: position.top+'px', left: position.left+'px'}" style="display: block;" role="listbox" aria-hidden="{{!isOpen()}}">
+			    <li ng-repeat="match in matches track by $index" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)" ng-click="selectMatch($index)" role="option" id="{{match.id}}">
+			        <div typeahead-match index="$index" match="match" query="query" template-url="templateUrl"></div>
+			    </li>
+			</ul>
+		</script>
+		<script type="text/ng-template" id="template/typeahead/typeahead-match.html">
+			<a tabindex="-1" bind-html-unsafe="match.label | typeaheadHighlight:query"></a>
+		</script>
+	
+		<h2 class="page-header flex space-between">
+			<div>
+				<img src="../img/icon-64.png" />
+				Traffalytics
+			</div>
+			<div class="flex flex-end">
+				<div>
+					<small><b>From</b> {{ global.homeAddress | split }}</small>
+					<small><b>To</b> {{ global.workAddress | split }}</small>
+					<small class="text-center">
+						<span class="label label-primary">{{ data.distance | number : 1 }} miles</span>
+						<span class="label label-primary">{{ data.time / 60 | timeDisplay }} normally</span>
+					</small>
+				</div>
+				<i class="glyphicon glyphicon-cog pull-right" ng-click="settings()"></i>
+			</div>
+
+		</h2>
 		
-		<span class="close">&times;</span>
-		<div class="clear"></div>
-		<button id="charts">Show Charts</button>
+		<div class="alert alert-success" ng-show="saved">Settings updated!</div>
+		
+		<div class="well text-center" ng-show="showSettings">
+			<div class="input-group">
+				<label class="input-group-addon"><i class="glyphicon glyphicon-home"></i></label>
+				<input class="form-control" ng-model="global.homeAddress" placeholder="Home address"
+					typeahead="address for address in getLocation($viewValue)"  />
+			</div>
+			<div class="input-group">
+				<label class="input-group-addon"><i class="glyphicon glyphicon-briefcase"></i></label>
+				<input class="form-control" ng-model="global.workAddress" placeholder="Work address" 
+					typeahead="address for address in getLocation($viewValue)" />
+			</div>
+			<button class="btn btn-success" ng-click="settings()">Save</button>
+			
+		</div>
+		
+		<div class="text-center">
+			<span class="time" ng-bind="data.timeWithTraffic / 60 | timeDisplay">
+			</span>
+		</div>
+		
+		<!--
+<h4 class="text-center">Traffic Score</h4>
+		<div class="progress">
+		  <div class="progress-bar" role="progressbar" ng-style="{'width': trafficScore() + '%'}">
+		    {{ trafficScore() }}
+		  </div>
+		</div>
+-->
+		
+		<div class="clearfix"></div>
+		
+		<div class="text-center">
+			<div><img ng-src='data:image/svg+xml;utf8,{{ svg }}' /></div>
+			<a href="dashboard.html" target="_blank" class="btn btn-primary">Show Charts</a>
+		</div>
 	</div>
 	
-	<div class="tests">
-		<ul class="list">
-			<!-- Content here -->
-		</ul>
+
+	
+	<style>
+		/* Include this file in your html if you are using the CSP mode. */
 		
-		<div class="blur"></div>
-	</div>
-	
-	
-	<!--<button class="draw-heatmap">Draw Heatmap</button>-->
-	
+		@charset "UTF-8";
+		
+		[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak],
+		.ng-cloak, .x-ng-cloak,
+		.ng-hide {
+		  display: none !important;
+		}
+		
+		ng\:form {
+		  display: block;
+		}
+		
+		.ng-animate-block-transitions {
+		  transition:0s all!important;
+		  -webkit-transition:0s all!important;
+		}
+		
+		/* show the element during a show/hide animation when the
+		 * animation is ongoing, but the .ng-hide class is active */
+		.ng-hide-add-active, .ng-hide-remove {
+		  display: block!important;
+		}
+	</style>
 	
 	
 

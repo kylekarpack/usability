@@ -1,0 +1,27 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script src="js/jquery.min.js"></script>
+	<script src="js/background.js"></script>
+
+	
+</head>
+<body>
+	
+	<h2>Hello</h2>
+	<script>
+		console.log("backgroundjs loaded");
+
+$.getJSON("http://www.bing.com/maps/directions.ashx?d=0~1&w=401%20NE%2071st%20St%20Seattle%2C%20WA%2098115~25%20Central%20Way%20Kirkland%20WA%2098033&mode=D")
+	.success(function(d) { 
+		console.log(d.routeResults[0].routes[0].routeLegs[0].summary.timeWithTraffic);
+			
+			chrome.browserAction.setBadgeText({text: 12});
+
+	});
+	
+	</script>
+	
+</body>
+
+</html>
